@@ -1,4 +1,3 @@
-from fastapi.responses import JSONResponse
 from routes.user_router import user_router
 from fastapi import FastAPI
 import uvicorn

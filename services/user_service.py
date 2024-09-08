@@ -1,6 +1,6 @@
+from models.response import ExistErrorCode, TokenModel
 from sqlalchemy.orm.session import Session
-from models.response import ExistErrorCode
-from models.user import User, TokenModel
+from models.user import User
 from typing import Literal
 import traceback
 import logging

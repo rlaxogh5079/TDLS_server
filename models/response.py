@@ -1,6 +1,8 @@
 from fastapi.responses import JSONResponse, FileResponse
+from datetime import datetime, timedelta
 from enum import Enum
-
+import jwt
+import os
 
 class ResponseStatusCode(Enum):
     SUCCESS = 200  # 성공
@@ -42,3 +44,42 @@ class ResponseModel:
     @staticmethod
     def show_image(image_path: str):
         return FileResponse(path=image_path, media_type="image/png")
+
+
+class TokenModel:
+    access_token: str
+
+    def __init__(self, user_uuid: str):
+        acem = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
+        sk = os.getenv("SECRET_KEY")
+        al = os.getenv("ALGORITHM")
+
+        if acem and sk and al:
+            self.access_token = jwt.encode(
+                {
+                    "sub": user_uuid,
+                    "exp": datetime.now() + timedelta(minutes=float(acem)),
+                },
+                sk,
+                algorithm=al,
+            )
+        else:
+            raise FileNotFoundError(
+                ".env파일에서 ACCESS_TOKEN_EXPIRE_MINUTES과 SECRET_KEY 환경 변수를 찾을 수 없습니다!"
+            )
+
+    @staticmethod
+    def decode_token(access_token: str) -> str:
+        acem = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
+        sk = os.getenv("SECRET_KEY")
+        al = os.getenv("ALGORITHM")
+
+        if acem and sk and al:
+            payload = jwt.decode(access_token, sk, algorithms=[al])
+            user_uuid = payload.get("sub")
+            return user_uuid
+
+        else:
+            raise FileNotFoundError(
+                ".env파일에서 ACCESS_TOKEN_EXPIRE_MINUTES과 SECRET_KEY 환경 변수를 찾을 수 없습니다!"
+            )

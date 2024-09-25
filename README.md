@@ -1,6 +1,6 @@
-# BLS
+# TDLS
 
-버킷 리스트를 친구들과 공유하는 앱입니다.
+ToDo List를 친구들과 공유하는 앱입니다.
 
 # FrameWork
 

@@ -59,4 +59,3 @@ class ForgotPasswordModel(BaseModel):
 
 class SignoutModel(ForgotPasswordModel):
     access_token: str
-

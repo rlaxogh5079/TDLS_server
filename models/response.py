@@ -4,6 +4,7 @@ from enum import Enum
 import jwt
 import os
 
+
 class ResponseStatusCode(Enum):
     SUCCESS = 200  # 성공
     FAIL = 401  # 실패

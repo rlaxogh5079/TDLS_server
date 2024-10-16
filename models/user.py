@@ -11,13 +11,13 @@ class User(Base):
     __tablename__ = "User"
 
     user_uuid: Mapped[str] = mapped_column(
-        String(36), primary_key=True, default=str(uuid.uuid4())
+        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
     )
     user_id: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(String(64), nullable=False)
     nickname: Mapped[str] = mapped_column(String(15), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(default=datetime.now())
+    created_at: Mapped[datetime] = mapped_column(default=lambda: datetime.now())
 
     def __init__(
         self,

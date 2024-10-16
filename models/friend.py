@@ -18,16 +18,16 @@ class FriendStatus(Enum):
 class Friend(Base):
     __tablename__ = "Friend"
 
-    user_uuid1: Mapped[str] = mapped_column(
-        String(36), primary_key=True, default=str(uuid.uuid4())
+    transmit_user_uuid: Mapped[str] = mapped_column(
+        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
     )
-    user_uuid2: Mapped[str] = mapped_column(
-        String(36), primary_key=True, default=str(uuid.uuid4())
+    receive_user_uuid: Mapped[str] = mapped_column(
+        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
     )
     status: Mapped[FriendStatus] = mapped_column(
         SQLEnum(FriendStatus), default=FriendStatus.pending
     )
-    created_at: Mapped[datetime] = mapped_column(default=datetime.now())
+    created_at: Mapped[datetime] = mapped_column(default=lambda: datetime.now())
 
     __table_args__ = (
         ForeignKeyConstraint(

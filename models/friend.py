@@ -31,19 +31,19 @@ class Friend(Base):
 
     __table_args__ = (
         ForeignKeyConstraint(
-            ["user_uuid1"],
+            ["transmit_user_uuid"],
             ["User.user_uuid"],
         ),
         ForeignKeyConstraint(
-            ["user_uuid2"],
+            ["receive_user_uuid"],
             ["User.user_uuid"],
         ),
     )
 
     def get_attributes(self) -> Dict[str, Any]:
         return {
-            "user_uuid1": self.user_uuid1,
-            "user_uuid2": self.user_uuid2,
+            "transmit_user_uuid": self.transmit_user_uuid,
+            "receive_user_uuid": self.receive_user_uuid,
             "status": Friend.convert_status_korean(self.status),
             "created_at": self.created_at.strftime("%Y/%m/%d %H:%M:%S"),
         }

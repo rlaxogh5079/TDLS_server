@@ -42,8 +42,8 @@ async def signup_router(model: CreateUserModel):
 @user_router.delete("/signout")
 async def signout_router(model: SignoutModel):
     response_dict = {
-        ResponseStatusCode.SUCCESS: "로그인에 성공하였습니다.",
-        ResponseStatusCode.FAIL: "로그인에 실패하였습니다.",
+        ResponseStatusCode.SUCCESS: "회원탈퇴에 성공하였습니다.",
+        ResponseStatusCode.FAIL: "회원탈퇴에 실패하였습니다.",
         ResponseStatusCode.INTERNAL_SERVER_ERROR: "서버 내부 에러가 발생하였습니다.",
     }
 

@@ -153,3 +153,26 @@ async def get_user_profile(access_token: str):
             message=response_dict[status_code],
             detail=detail.text,
         )
+
+
+@user_router.post("/update/avatar")
+async def update_user_avatar(access_token: str, file: UploadFile = File(None)):
+    response_dict = {
+        ResponseStatusCode.SUCCESS: "프로필 이미지를 성공적으로 변경하였습니다!",
+        ResponseStatusCode.FAIL: "프로필 이미지 변경에 실패하였습니다!",
+        ResponseStatusCode.INTERNAL_SERVER_ERROR: "서버 내부 에러가 발생하였습니다.",
+    }
+
+    status_code, detail = update_avatar(DBObject(), access_token, await file.read())
+    if status_code == ResponseStatusCode.SUCCESS:
+        return ResponseModel.show_json(
+            status_code=status_code.value,
+            message=response_dict[status_code],
+        )
+
+    else:
+        return ResponseModel.show_json(
+            status_code=status_code.value,
+            message=response_dict[status_code],
+            detail=detail.text,
+        )

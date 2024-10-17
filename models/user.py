@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import String, TEXT
 from pydantic import BaseModel
 from datetime import datetime
-from sqlalchemy import String
 from typing import Dict, Any
 from models.base import Base
 import uuid
@@ -18,6 +18,7 @@ class User(Base):
     nickname: Mapped[str] = mapped_column(String(15), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     created_at: Mapped[datetime] = mapped_column(default=lambda: datetime.now())
+    avatar_path: Mapped[str | None] = mapped_column(TEXT, default=None)
 
     def __init__(
         self,
@@ -34,6 +35,7 @@ class User(Base):
         self.nickname = nickname
         self.email = email
         self.created_at = created_at if created_at else datetime.now()
+        self.avatar_path = None
 
     def get_attributes(self) -> Dict[str, Any]:
         return {
@@ -42,6 +44,7 @@ class User(Base):
             "nickname": self.nickname,
             "email": self.email,
             "created_at": self.created_at.strftime("%Y/%m/%d %H:%M:%S"),
+            "avatar_path": self.avatar_path,
         }
 
 

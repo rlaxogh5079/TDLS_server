@@ -6,6 +6,7 @@ from services.user_service import (
     convert_id_to_uuid,
     check_exist_user,
     login_service,
+    update_avatar_service,
 )
 from models.user import CreateUserModel, ForgotPasswordModel, SignoutModel, User
 from models.response import ResponseStatusCode, Detail, ExistErrorCode
@@ -150,6 +151,21 @@ def get_profile(
 
         else:
             return (ResponseStatusCode.NOT_FOUND, Detail("User not founded"))
+
+    except Exception as e:
+        return (ResponseStatusCode.INTERNAL_SERVER_ERROR, Detail(str(e)))
+
+
+def update_avatar(
+    db: DBObject, access_token: str, file: bytes | None = None
+) -> Tuple[ResponseStatusCode, Detail]:
+
+    try:
+        if update_avatar_service(db.session, access_token, file):
+            return (ResponseStatusCode.SUCCESS, Detail(None))
+
+        else:
+            return (ResponseStatusCode.FAIL, Detail("Failed to update avatar"))
 
     except Exception as e:
         return (ResponseStatusCode.INTERNAL_SERVER_ERROR, Detail(str(e)))

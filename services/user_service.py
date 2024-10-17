@@ -5,6 +5,8 @@ from typing import Literal
 import traceback
 import logging
 import bcrypt
+import uuid
+import os
 
 
 def create_user(
@@ -126,6 +128,31 @@ def login_service(se: Session, user_id: str, password: str) -> TokenModel | None
         else:
             print("login failed")
             return None
+
+    except Exception as e:
+        logging.error(
+            f"{e}: {''.join(traceback.format_exception(None, e, e.__traceback__))}"
+        )
+        raise e
+
+
+def update_avatar_service(
+    se: Session, access_token: str, image: bytes | None = None
+) -> bool:
+    try:
+        user_uuid = TokenModel.decode_token(access_token)
+
+        if image:
+            file_name = f"{str(uuid.uuid4())}.jpg"
+            with open(os.path.join("images", file_name), "wb") as fp:
+                fp.write(image)
+
+        else:
+            file_name = None
+
+        se.query(User).filter_by(user_uuid=user_uuid).update({"avatar_path": file_name})
+        se.commit()
+        return True
 
     except Exception as e:
         logging.error(

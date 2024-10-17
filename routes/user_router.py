@@ -5,12 +5,13 @@ from controllers.user_controller import (
     forgot_password,
     check_duplicate,
     get_profile,
+    update_avatar,
 )
 from models.user import CreateUserModel, SignoutModel, ForgotPasswordModel
 from models.response import ResponseStatusCode, ResponseModel
+from fastapi import APIRouter, Depends, UploadFile, File
 from fastapi.security import OAuth2PasswordRequestForm
 from database.connection import DBObject
-from fastapi import APIRouter, Depends
 from typing import Literal
 
 user_router = APIRouter(prefix="/user", tags=["user"])
@@ -35,7 +36,7 @@ async def signup_router(model: CreateUserModel):
         return ResponseModel.show_json(
             status_code=status_code.value,
             message=response_dict[status_code],
-            detail=detail,
+            detail=detail.text,
         )
 
 
@@ -57,7 +58,7 @@ async def signout_router(model: SignoutModel):
         return ResponseModel.show_json(
             status_code=status_code.value,
             message=response_dict[status_code],
-            detail=detail,
+            detail=detail.text,
         )
 
 
@@ -104,7 +105,7 @@ async def forgot_password_router(model: ForgotPasswordModel):
         return ResponseModel.show_json(
             status_code=status_code.value,
             message=response_dict[status_code],
-            detail=detail,
+            detail=detail.text,
         )
 
 

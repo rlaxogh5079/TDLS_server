@@ -31,7 +31,7 @@ def signup(
             hashed_password = bcrypt.hashpw(
                 user_info.password.encode("utf-8"), bcrypt.gensalt()
             ).decode("utf-8")
-            result = create_user(
+            create_user(
                 db.session,
                 user_info.user_id,
                 hashed_password,
@@ -39,11 +39,7 @@ def signup(
                 user_info.email,
             )
 
-            if result:
-                return (ResponseStatusCode.SUCCESS, Detail(None))
-
-            else:
-                return (ResponseStatusCode.FAIL, Detail("회원가입에 실패하였습니다!"))
+            return (ResponseStatusCode.SUCCESS, Detail(None))
 
         else:
             detail = Detail(None)
@@ -64,16 +60,17 @@ def signup(
 
 def signout(db: DBObject, user_info: SignoutModel) -> Tuple[ResponseStatusCode, Detail]:
     try:
-        status_code, detail = login(db, OAuth2PasswordRequestForm(username=user_info.user_id, password=user_info.password))  # type: ignore
+        status_code, detail = login(
+            db,
+            OAuth2PasswordRequestForm(
+                username=user_info.user_id, password=user_info.password
+            ),
+        )
         if status_code != ResponseStatusCode.SUCCESS:
             return (status_code, detail)  # type: ignore
 
-        result = delete_user_by_uuid(db.session, user_info.access_token)
-        if result:
-            return (ResponseStatusCode.SUCCESS, Detail(None))
-
-        else:
-            return (ResponseStatusCode.FAIL, Detail("계정 제거에 실패하였습니다."))
+        delete_user_by_uuid(db.session, user_info.access_token)
+        return (ResponseStatusCode.SUCCESS, Detail(None))
 
     except Exception as e:
         return (ResponseStatusCode.INTERNAL_SERVER_ERROR, Detail(str(e)))
@@ -103,17 +100,10 @@ def forgot_password(
     if user_uuid is None:
         return (ResponseStatusCode.FAIL, Detail("아이디를 확인해 주세요"))
 
-    result = update_user_by_uuid(
+    update_user_by_uuid(
         db.session, user_uuid=user_uuid, option="password", value=user_info.password
     )
-
-    if result:
-        return (ResponseStatusCode.SUCCESS, Detail(None))
-
-    return (
-        ResponseStatusCode.INTERNAL_SERVER_ERROR,
-        Detail("비밀번호 변경에 실패하였습니다."),
-    )
+    return (ResponseStatusCode.SUCCESS, Detail(None))
 
 
 def check_duplicate(
@@ -161,11 +151,8 @@ def update_avatar(
 ) -> Tuple[ResponseStatusCode, Detail]:
 
     try:
-        if update_avatar_service(db.session, access_token, file):
-            return (ResponseStatusCode.SUCCESS, Detail(None))
-
-        else:
-            return (ResponseStatusCode.FAIL, Detail("Failed to update avatar"))
+        update_avatar_service(db.session, access_token, file)
+        return (ResponseStatusCode.SUCCESS, Detail(None))
 
     except Exception as e:
         return (ResponseStatusCode.INTERNAL_SERVER_ERROR, Detail(str(e)))

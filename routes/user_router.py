@@ -21,9 +21,7 @@ user_router = APIRouter(prefix="/user", tags=["user"])
 async def signup_router(model: CreateUserModel):
     response_dict = {
         ResponseStatusCode.SUCCESS: "회원가입에 성공하였습니다.",
-        ResponseStatusCode.FAIL: "회원가입에 실패하였습니다.",
         ResponseStatusCode.CONFLICT: "정보가 중복되었습니다.",
-        ResponseStatusCode.INTERNAL_SERVER_ERROR: "서버 내부 에러가 발생하였습니다.",
     }
 
     status_code, detail = signup(DBObject(), model)
@@ -45,7 +43,6 @@ async def signout_router(model: SignoutModel):
     response_dict = {
         ResponseStatusCode.SUCCESS: "회원탈퇴에 성공하였습니다.",
         ResponseStatusCode.FAIL: "회원탈퇴에 실패하였습니다.",
-        ResponseStatusCode.INTERNAL_SERVER_ERROR: "서버 내부 에러가 발생하였습니다.",
     }
 
     status_code, detail = signout(DBObject(), model)
@@ -67,7 +64,6 @@ async def login_router(model: OAuth2PasswordRequestForm = Depends()):
     response_dict = {
         ResponseStatusCode.SUCCESS: "로그인에 성공하였습니다.",
         ResponseStatusCode.FAIL: "로그인에 실패하였습니다.",
-        ResponseStatusCode.INTERNAL_SERVER_ERROR: "서버 내부 에러가 발생하였습니다.",
     }
 
     status_code, detail = login(DBObject(), model)  # type: ignore
@@ -92,7 +88,6 @@ async def forgot_password_router(model: ForgotPasswordModel):
     response_dict = {
         ResponseStatusCode.SUCCESS: "성공적으로 비밀번호를 변경하였습니다!",
         ResponseStatusCode.FAIL: "비밀번호 변경에 실패하였습니다!",
-        ResponseStatusCode.INTERNAL_SERVER_ERROR: "서버 내부 오류가 발생하였습니다.",
     }
 
     status_code, detail = forgot_password(DBObject(), model)
@@ -136,7 +131,6 @@ async def get_user_profile(access_token: str):
     response_dict = {
         ResponseStatusCode.SUCCESS: "성공적으로 정보를 조회하였습니다.",
         ResponseStatusCode.NOT_FOUND: "유저 조회에 실패하였습니다.",
-        ResponseStatusCode.INTERNAL_SERVER_ERROR: "서버 내부 에러가 발생하였습니다.",
     }
     status_code, detail = get_profile(DBObject(), access_token)
 
@@ -160,7 +154,6 @@ async def update_user_avatar(access_token: str, file: UploadFile = File(None)):
     response_dict = {
         ResponseStatusCode.SUCCESS: "프로필 이미지를 성공적으로 변경하였습니다!",
         ResponseStatusCode.FAIL: "프로필 이미지 변경에 실패하였습니다!",
-        ResponseStatusCode.INTERNAL_SERVER_ERROR: "서버 내부 에러가 발생하였습니다.",
     }
 
     status_code, detail = update_avatar(DBObject(), access_token, await file.read())

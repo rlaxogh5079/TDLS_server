@@ -16,6 +16,16 @@ class ResponseStatusCode(Enum):
     INTERNAL_SERVER_ERROR = 500  # 서버 내부 에러
 
 
+class TDLSException(Exception):
+    message: str
+
+    def __init__(self, message):
+        self.message = message
+
+    def __str__(self):
+        return f"TDLS Exception is occured with error message: ({self.message})"
+
+
 class ExistErrorCode(Enum):
     USEFUL = 1  # 사용가능
     USERID = 2  # 아이디가 중복됨

@@ -180,8 +180,20 @@ async def update_user_avatar(access_token: str, file: UploadFile = File(None)):
 
 @user_router.post("/email/send/verify_code")
 async def send_email_router(email: str):
-    status_code, _ = send_email(email)
-    return ResponseModel.show_json(status_code = status_code.value, message = "성공적으로 인증번호를 요청하였습니다!")
+    status_code, detail = send_email(email)
+        
+    if status_code == ResponseStatusCode.SUCCESS:
+        return ResponseModel.show_json(
+            status_code=status_code.value,
+            message="성공적으로 메일 인증 요청을 보냈습니다!",
+        )
+
+    else:
+        return ResponseModel.show_json(
+            status_code=status_code.value,
+            message="서버 내부 오류가 발생하였습니다.",
+            detail=detail.text,
+        )
 
 @user_router.post("/email/verify")
 async def verify_email_router(email: str, verify_code: str):

@@ -108,9 +108,14 @@ async def forgot_password_router(model: ForgotPasswordModel):
 async def check_duplicate_info(
     option: Literal["user_id", "nickname", "email"], value: str
 ):
+    option_dict = {
+        "user_id": "사용자 이름",
+        "nickname": "닉네임",
+        "email": "이메일"
+    }
     response_dict = {
-        ResponseStatusCode.SUCCESS: f"사용할 수 있는 {option}입니다!",
-        ResponseStatusCode.CONFLICT: f"사용할 수 없는 {option}입니다! 다른 {option}을 입력해주세요",
+        ResponseStatusCode.SUCCESS: f"사용할 수 있는 {option_dict[option]}입니다!",
+        ResponseStatusCode.CONFLICT: f"사용할 수 없는 {option_dict[option]}입니다! 다른 {option_dict[option]}을 입력해주세요",
     }
     status_code, detail = eval(f"check_duplicate(DBObject(), {option}=value)")
     if status_code == ResponseStatusCode.SUCCESS:

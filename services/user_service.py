@@ -1,14 +1,22 @@
-from models.response import ExistErrorCode, TokenModel
+from models.response import ExistErrorCode, TokenModel, VerifyErrorCode
+from email.mime.multipart import MIMEMultipart
 from sqlalchemy.orm.session import Session
 from models.response import TDLSException
+from email.mime.text import MIMEText
+from datetime import datetime
 from models.user import User
 from typing import Literal
+from random import randint
 import traceback
 import logging
+import smtplib
 import bcrypt
 import uuid
 import os
 
+email_session = {
+    
+}
 
 def create_user(
     se: Session, user_id: str, password: str, nickname: str, email: str
@@ -163,3 +171,50 @@ def update_avatar_service(
             f"{e}: {''.join(traceback.format_exception(None, e, e.__traceback__))}"
         )
         raise TDLSException(str(e))
+
+def send_email_service(
+    email: str
+) -> None:
+    try:
+        message = MIMEMultipart("alternative")
+        message["Subject"] = "TDLS 인증번호 요청"
+        message["From"] = str(os.getenv("SENDER"))
+        message["To"] = email
+        email_session[f"{email}-verify-code"] = str(randint(10 ** 4, 10 ** 6 - 1)).rjust(6, '0')
+        text = f"<html><body><div>인증 코드: {email_session[f'{email}-verify-code']}</div></body></html>"
+        part2 = MIMEText(text, "html")
+        message.attach(part2)
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(str(os.getenv("SENDER")), str(os.getenv("APP_PASSWORD")))
+            server.sendmail(str(os.getenv("SENDER")), email, message.as_string())
+        
+        email_session[f"{email}-start-time"] = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+        
+    except Exception as e:
+        logging.error(
+            f"{e}: {''.join(traceback.format_exception(None, e, e.__traceback__))}"
+        )
+        raise TDLSException(str(e))
+    
+def verify_email_service(
+    email: str,
+    verify_code: str
+) -> VerifyErrorCode:
+    try:
+        if (datetime.now() - datetime.strptime(email_session[f"{email}-start-time"], "%Y/%m/%d %H:%M:%S")).total_seconds() >= 300:
+            return VerifyErrorCode.TIMEOUT
+        
+        elif verify_code != email_session[f"{email}-verify-code"]:
+            return VerifyErrorCode.WRONG_VERIFY_CODE
+
+        return VerifyErrorCode.SUCCESS
+        
+    except Exception as e:
+        logging.error(
+            f"{e}: {''.join(traceback.format_exception(None, e, e.__traceback__))}"
+        )
+        raise TDLSException(str(e))
+    
+    finally:
+        del email_session[f"{email}-verify-code"]
+        del email_session[f"{email}-start-time"]

@@ -31,6 +31,11 @@ class ExistErrorCode(Enum):
     USERID = 2  # 아이디가 중복됨
     NICKNAME = 3  # 닉네임이 중복됨
     EMAIL = 4  # 이메일이 중복됨
+    
+class VerifyErrorCode(Enum):
+    SUCCESS = 1 # 인증 성공
+    WRONG_VERIFY_CODE = 2 # 인증 코드가 잘못됨
+    TIMEOUT = 3 # 타임 아웃
 
 
 class Detail:

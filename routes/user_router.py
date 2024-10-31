@@ -6,6 +6,8 @@ from controllers.user_controller import (
     check_duplicate,
     get_profile,
     update_avatar,
+    send_email,
+    verify_email
 )
 from models.user import CreateUserModel, SignoutModel, ForgotPasswordModel
 from models.response import ResponseStatusCode, ResponseModel
@@ -174,3 +176,31 @@ async def update_user_avatar(access_token: str, file: UploadFile = File(None)):
             message=response_dict[status_code],
             detail=detail.text,
         )
+
+
+@user_router.post("/email/send/verify_code")
+async def send_email_router(email: str):
+    status_code, _ = send_email(email)
+    return ResponseModel.show_json(status_code = status_code.value, message = "성공적으로 인증번호를 요청하였습니다!")
+
+@user_router.post("/email/verify")
+async def verify_email_router(email: str, verify_code: str):
+    response_dict = {
+        ResponseStatusCode.SUCCESS: "이메일 인증에 성공하였습니다!",
+        ResponseStatusCode.FAIL: '인증번호가 일치하지 않습니다.',
+        ResponseStatusCode.TIME_OUT: "인증 요청 시간이 초과하였습니다.",
+    }
+    status_code, detail = verify_email(email, verify_code)
+    if status_code == ResponseStatusCode.SUCCESS:
+        return ResponseModel.show_json(
+            status_code=status_code.value,
+            message=response_dict[status_code],
+        )
+
+    else:
+        return ResponseModel.show_json(
+            status_code=status_code.value,
+            message=response_dict[status_code],
+            detail=detail.text,
+        )
+    

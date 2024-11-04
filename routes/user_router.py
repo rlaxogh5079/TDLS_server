@@ -7,7 +7,7 @@ from controllers.user_controller import (
     get_profile,
     update_avatar,
     send_email,
-    verify_email
+    verify_email,
 )
 from models.user import CreateUserModel, SignoutModel, ForgotPasswordModel
 from models.response import ResponseStatusCode, ResponseModel
@@ -110,11 +110,7 @@ async def forgot_password_router(model: ForgotPasswordModel):
 async def check_duplicate_info(
     option: Literal["user_id", "nickname", "email"], value: str
 ):
-    option_dict = {
-        "user_id": "사용자 이름",
-        "nickname": "닉네임",
-        "email": "이메일"
-    }
+    option_dict = {"user_id": "사용자 이름", "nickname": "닉네임", "email": "이메일"}
     response_dict = {
         ResponseStatusCode.SUCCESS: f"사용할 수 있는 {option_dict[option]}입니다!",
         ResponseStatusCode.CONFLICT: f"사용할 수 없는 {option_dict[option]}입니다! 다른 {option_dict[option]}을 입력해주세요",
@@ -181,7 +177,7 @@ async def update_user_avatar(access_token: str, file: UploadFile = File(None)):
 @user_router.post("/email/send/verify_code")
 async def send_email_router(email: str):
     status_code, detail = send_email(email)
-        
+
     if status_code == ResponseStatusCode.SUCCESS:
         return ResponseModel.show_json(
             status_code=status_code.value,
@@ -195,11 +191,12 @@ async def send_email_router(email: str):
             detail=detail.text,
         )
 
+
 @user_router.post("/email/verify")
 async def verify_email_router(email: str, verify_code: str):
     response_dict = {
         ResponseStatusCode.SUCCESS: "이메일 인증에 성공하였습니다!",
-        ResponseStatusCode.FAIL: '인증번호가 일치하지 않습니다.',
+        ResponseStatusCode.FAIL: "인증번호가 일치하지 않습니다.",
         ResponseStatusCode.TIME_OUT: "인증 요청 시간이 초과하였습니다.",
     }
     status_code, detail = verify_email(email, verify_code)
@@ -215,4 +212,3 @@ async def verify_email_router(email: str, verify_code: str):
             message=response_dict[status_code],
             detail=detail.text,
         )
-    

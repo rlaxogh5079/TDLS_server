@@ -8,7 +8,7 @@ from services.user_service import (
     login_service,
     update_avatar_service,
     send_email_service,
-    verify_email_service
+    verify_email_service,
 )
 from models.response import ResponseStatusCode, Detail, ExistErrorCode, VerifyErrorCode
 from models.user import CreateUserModel, ForgotPasswordModel, SignoutModel, User
@@ -158,26 +158,29 @@ def update_avatar(
     except Exception as e:
         return (ResponseStatusCode.INTERNAL_SERVER_ERROR, Detail(str(e)))
 
-def send_email(
-    email: str
-) -> Tuple[ResponseStatusCode, Detail]:
+
+def send_email(email: str) -> Tuple[ResponseStatusCode, Detail]:
     try:
         send_email_service(email)
         return (ResponseStatusCode.SUCCESS, Detail(None))
-    
+
     except Exception as e:
         return (ResponseStatusCode.INTERNAL_SERVER_ERROR, Detail(str(e)))
 
-def verify_email(
-    email: str,
-    verify_code: str
-) -> Tuple[ResponseStatusCode, Detail]:
+
+def verify_email(email: str, verify_code: str) -> Tuple[ResponseStatusCode, Detail]:
     try:
         return {
             VerifyErrorCode.SUCCESS: (ResponseStatusCode.SUCCESS, Detail(None)),
-            VerifyErrorCode.WRONG_VERIFY_CODE: (ResponseStatusCode.FAIL, Detail("인증번호가 잘못되었습니다.")),
-            VerifyErrorCode.TIMEOUT: (ResponseStatusCode.TIME_OUT, Detail("인증 시간이 초과되었습니다."))
-        } [verify_email_service(email, verify_code)]
-        
+            VerifyErrorCode.WRONG_VERIFY_CODE: (
+                ResponseStatusCode.FAIL,
+                Detail("인증번호가 잘못되었습니다."),
+            ),
+            VerifyErrorCode.TIMEOUT: (
+                ResponseStatusCode.TIME_OUT,
+                Detail("인증 시간이 초과되었습니다."),
+            ),
+        }[verify_email_service(email, verify_code)]
+
     except Exception as e:
         return (ResponseStatusCode.INTERNAL_SERVER_ERROR, Detail(str(e)))

@@ -13,6 +13,7 @@ class FriendStatus(Enum):
     accepted = 1  # 수락 됨
     rejected = 2  # 거절 됨
     block = 3  # 차단 됨
+    canceld = 4  # 취소 됨
 
 
 class Friend(Base):
@@ -39,6 +40,18 @@ class Friend(Base):
             ["User.user_uuid"],
         ),
     )
+
+    def __init__(
+        self,
+        transmit_user_uuid: str,
+        receive_user_uuid: str,
+        status: FriendStatus | None = None,
+        created_at: datetime | None = None,
+    ):
+        self.transmit_user_uuid = transmit_user_uuid
+        self.receive_user_uuid = receive_user_uuid
+        self.status = status if status else FriendStatus.pending
+        self.created_at = created_at if created_at else datetime.now()
 
     def get_attributes(self) -> Dict[str, Any]:
         return {

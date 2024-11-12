@@ -30,7 +30,7 @@ def create_user(
         logging.error(
             f"{e}: {''.join(traceback.format_exception(None, e, e.__traceback__))}"
         )
-        raise TDLSException(str(e))
+        raise e
 
 
 def read_user_by_uuid(se: Session, access_token: str) -> User | None:
@@ -43,7 +43,7 @@ def read_user_by_uuid(se: Session, access_token: str) -> User | None:
         logging.error(
             f"{e}: {''.join(traceback.format_exception(None, e, e.__traceback__))}"
         )
-        raise TDLSException(str(e))
+        raise e
 
 
 def update_user_by_uuid(
@@ -60,7 +60,7 @@ def update_user_by_uuid(
         logging.error(
             f"{e}: {''.join(traceback.format_exception(None, e, e.__traceback__))}"
         )
-        raise TDLSException(str(e))
+        raise e
 
 
 def delete_user_by_uuid(se: Session, access_token: str) -> None:
@@ -73,7 +73,7 @@ def delete_user_by_uuid(se: Session, access_token: str) -> None:
         logging.error(
             f"{e}: {''.join(traceback.format_exception(None, e, e.__traceback__))}"
         )
-        raise TDLSException(str(e))
+        raise e
 
 
 def convert_id_to_uuid(se: Session, user_id: str) -> str | None:
@@ -88,7 +88,7 @@ def convert_id_to_uuid(se: Session, user_id: str) -> str | None:
         logging.error(
             f"{e}: {''.join(traceback.format_exception(None, e, e.__traceback__))}"
         )
-        raise TDLSException(str(e))
+        raise e
 
 
 def check_exist_user(
@@ -121,7 +121,7 @@ def check_exist_user(
         logging.error(
             f"{e}: {''.join(traceback.format_exception(None, e, e.__traceback__))}"
         )
-        raise TDLSException(str(e))
+        raise e
 
 
 def login_service(se: Session, user_id: str, password: str) -> TokenModel | None:
@@ -145,7 +145,7 @@ def login_service(se: Session, user_id: str, password: str) -> TokenModel | None
         logging.error(
             f"{e}: {''.join(traceback.format_exception(None, e, e.__traceback__))}"
         )
-        raise TDLSException(str(e))
+        raise e
 
 
 def update_avatar_service(
@@ -169,7 +169,7 @@ def update_avatar_service(
         logging.error(
             f"{e}: {''.join(traceback.format_exception(None, e, e.__traceback__))}"
         )
-        raise TDLSException(str(e))
+        raise e
 
 
 def send_email_service(email: str) -> None:
@@ -196,7 +196,7 @@ def send_email_service(email: str) -> None:
         logging.error(
             f"{e}: {''.join(traceback.format_exception(None, e, e.__traceback__))}"
         )
-        raise TDLSException(str(e))
+        raise e
 
 
 def verify_email_service(email: str, verify_code: str) -> VerifyErrorCode:
@@ -222,4 +222,4 @@ def verify_email_service(email: str, verify_code: str) -> VerifyErrorCode:
         logging.error(
             f"{e}: {''.join(traceback.format_exception(None, e, e.__traceback__))}"
         )
-        raise TDLSException(str(e))
+        raise e

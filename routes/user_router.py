@@ -156,10 +156,18 @@ async def get_user_profile(access_token: str):
 async def update_user_avatar(access_token: str, file: UploadFile = File(None)):
     response_dict = {
         ResponseStatusCode.SUCCESS: "프로필 이미지를 성공적으로 변경하였습니다!",
+        ResponseStatusCode.NOT_FOUND: "이미지 파일을 찾을 수 없습니다!",
         ResponseStatusCode.FAIL: "프로필 이미지 변경에 실패하였습니다!",
     }
+    if file is None:
+        status_code, detail = (
+            ResponseStatusCode.NOT_FOUND,
+            Detail("이미지 파일을 찾을 수 없습니다."),
+        )
 
-    status_code, detail = update_avatar(DBObject(), access_token, await file.read())
+    else:
+        status_code, detail = update_avatar(DBObject(), access_token, await file.read())
+
     if status_code == ResponseStatusCode.SUCCESS:
         return ResponseModel.show_json(
             status_code=status_code.value,

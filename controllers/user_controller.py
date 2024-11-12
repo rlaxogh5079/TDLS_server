@@ -10,7 +10,13 @@ from services.user_service import (
     send_email_service,
     verify_email_service,
 )
-from models.response import ResponseStatusCode, Detail, ExistErrorCode, VerifyErrorCode
+from models.response import (
+    ResponseStatusCode,
+    Detail,
+    ExistErrorCode,
+    VerifyErrorCode,
+    TDLSException,
+)
 from models.user import CreateUserModel, ForgotPasswordModel, SignoutModel, User
 from fastapi.security import OAuth2PasswordRequestForm
 from database.connection import DBObject
@@ -57,7 +63,7 @@ def signup(
             return (ResponseStatusCode.CONFLICT, detail)
 
     except Exception as e:
-        return (ResponseStatusCode.INTERNAL_SERVER_ERROR, Detail(str(e)))
+        raise TDLSException(str(e))
 
 
 def signout(db: DBObject, user_info: SignoutModel) -> Tuple[ResponseStatusCode, Detail]:
@@ -75,7 +81,7 @@ def signout(db: DBObject, user_info: SignoutModel) -> Tuple[ResponseStatusCode, 
         return (ResponseStatusCode.SUCCESS, Detail(None))
 
     except Exception as e:
-        return (ResponseStatusCode.INTERNAL_SERVER_ERROR, Detail(str(e)))
+        raise TDLSException(str(e))
 
 
 def login(
@@ -92,7 +98,7 @@ def login(
         return (ResponseStatusCode.SUCCESS, token.access_token)
 
     except Exception as e:
-        return (ResponseStatusCode.INTERNAL_SERVER_ERROR, Detail(str(e)))
+        raise TDLSException(str(e))
 
 
 def forgot_password(
@@ -145,7 +151,7 @@ def get_profile(
             return (ResponseStatusCode.NOT_FOUND, Detail("User not founded"))
 
     except Exception as e:
-        return (ResponseStatusCode.INTERNAL_SERVER_ERROR, Detail(str(e)))
+        raise TDLSException(str(e))
 
 
 def update_avatar(
@@ -156,7 +162,7 @@ def update_avatar(
         return (ResponseStatusCode.SUCCESS, Detail(None))
 
     except Exception as e:
-        return (ResponseStatusCode.INTERNAL_SERVER_ERROR, Detail(str(e)))
+        raise TDLSException(str(e))
 
 
 def send_email(email: str) -> Tuple[ResponseStatusCode, Detail]:
@@ -165,7 +171,7 @@ def send_email(email: str) -> Tuple[ResponseStatusCode, Detail]:
         return (ResponseStatusCode.SUCCESS, Detail(None))
 
     except Exception as e:
-        return (ResponseStatusCode.INTERNAL_SERVER_ERROR, Detail(str(e)))
+        raise TDLSException(str(e))
 
 
 def verify_email(email: str, verify_code: str) -> Tuple[ResponseStatusCode, Detail]:
@@ -183,4 +189,4 @@ def verify_email(email: str, verify_code: str) -> Tuple[ResponseStatusCode, Deta
         }[verify_email_service(email, verify_code)]
 
     except Exception as e:
-        return (ResponseStatusCode.INTERNAL_SERVER_ERROR, Detail(str(e)))
+        raise TDLSException(str(e))

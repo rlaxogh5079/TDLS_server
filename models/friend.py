@@ -13,7 +13,7 @@ class FriendStatus(Enum):
     accepted = 1  # 수락 됨
     rejected = 2  # 거절 됨
     block = 3  # 차단 됨
-    canceld = 4  # 취소 됨
+    canceled = 4  # 취소 됨
 
 
 class Friend(Base):

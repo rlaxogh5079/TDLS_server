@@ -33,9 +33,8 @@ def create_user(
         raise e
 
 
-def read_user_by_uuid(se: Session, access_token: str) -> User | None:
+def read_user_by_uuid(se: Session, user_uuid: str) -> User:
     try:
-        user_uuid = TokenModel.decode_token(access_token)
         result = se.query(User).filter_by(user_uuid=user_uuid).first()
         return result
 

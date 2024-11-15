@@ -20,6 +20,7 @@ from models.response import (
 from models.user import CreateUserModel, ForgotPasswordModel, SignoutModel, User
 from fastapi.security import OAuth2PasswordRequestForm
 from database.connection import DBObject
+from models.response import TokenModel
 from typing import Tuple
 import bcrypt
 
@@ -143,7 +144,8 @@ def get_profile(
     db: DBObject, access_token: str
 ) -> Tuple[ResponseStatusCode, Detail | User]:
     try:
-        result = read_user_by_uuid(db.session, access_token)
+        user_uuid = TokenModel.decode_token(access_token)
+        result = read_user_by_uuid(db.session, user_uuid)
         if result:
             return (ResponseStatusCode.SUCCESS, result)
 

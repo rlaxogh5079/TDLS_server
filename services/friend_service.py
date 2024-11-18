@@ -5,7 +5,7 @@ import traceback
 import logging
 
 
-def request_friend(
+def request_friend_service(
     se: Session, transmit_user_uuid: str, receive_user_uuid: str
 ) -> bool:
     try:
@@ -24,23 +24,23 @@ def request_friend(
 
 def load_friend_request(
     se: Session, user_uuid: str, is_receive: bool = False
-) -> List[str] | None:
+) -> List[Friend]:
     try:
         if is_receive:
             result = (
-                se.query(Friend.receive_user_uuid)
+                se.query(Friend)
                 .filter_by(transmit_user_uuid=user_uuid, status=FriendStatus.pending)
                 .all()
             )
 
         else:
             result = (
-                se.query(Friend.transmit_user_uuid)
+                se.query(Friend)
                 .filter_by(recieve_user_uuid=user_uuid, status=FriendStatus.pending)
                 .all()
             )
 
-        return [row[0] for row in result]
+        return result
 
     except Exception as e:
         logging.error(
@@ -49,7 +49,7 @@ def load_friend_request(
         raise e
 
 
-def load_friend_list(se: Session, user_uuid: str) -> List[str] | None:
+def load_friend_list(se: Session, user_uuid: str) -> List[Friend]:
     try:
         result = (
             se.query(Friend)
@@ -61,7 +61,7 @@ def load_friend_list(se: Session, user_uuid: str) -> List[str] | None:
             .all()
         )
 
-        return [row[0] for row in result]
+        return result
 
     except Exception as e:
         logging.error(
@@ -95,6 +95,27 @@ def change_friend_request(
 
     except KeyError as e:
         return False
+
+    except Exception as e:
+        logging.error(
+            f"{e}: {''.join(traceback.format_exception(None, e, e.__traceback__))}"
+        )
+        raise e
+
+
+def load_block_friend_uuid_list(se: Session, user_uuid: str) -> List[Friend]:
+    try:
+        result = (
+            se.query(Friend)
+            .filter_by(status=FriendStatus.block)
+            .filter(
+                (Friend.transmit_user_uuid == user_uuid)
+                | (Friend.receive_user_uuid == user_uuid)
+            )
+            .all()
+        )
+
+        return [row[0] for row in result]
 
     except Exception as e:
         logging.error(

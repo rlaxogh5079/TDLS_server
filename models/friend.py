@@ -1,6 +1,5 @@
 from sqlalchemy import String, ForeignKeyConstraint, Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column
-from pydantic import BaseModel
 from datetime import datetime
 from typing import Dict, Any
 from models.base import Base

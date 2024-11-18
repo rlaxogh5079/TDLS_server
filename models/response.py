@@ -53,7 +53,7 @@ class ResponseModel:
     def show_json(status_code: int, **kwargs):
         show_dict = {"status_code": status_code}
         for key in kwargs.keys():
-            if kwargs[key]:
+            if kwargs[key] != None:
                 show_dict[key] = kwargs[key]
 
         return JSONResponse(show_dict, status_code=status_code)

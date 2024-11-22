@@ -30,10 +30,15 @@ class Category(Base):
     )
 
     def __init__(
-        self, category_name: str, owner_uuid: str, created_at: datetime | None = None
+        self,
+        category_name: str,
+        owner_uuid: str,
+        room_uuid: str,
+        created_at: datetime | None = None,
     ):
         self.category_name = category_name
         self.owner_uuid = owner_uuid
+        self.room_uuid = room_uuid
         self.created_at = created_at if created_at else datetime.now()
 
     def get_attributes(self) -> Dict[str, Any]:

@@ -43,6 +43,7 @@ class Task(Base):
         content: str,
         category_uuid: str,
         user_uuid: str,
+        room_uuid: str,
         created_at: datetime | None = None,
         updated_at: datetime | None = None,
         end_at: datetime | None = None,
@@ -51,6 +52,7 @@ class Task(Base):
         self.content = content
         self.category_uuid = category_uuid
         self.user_uuid = user_uuid
+        self.room_uuid = room_uuid
         self.created_at = created_at if created_at else datetime.now()
         self.updated_at = updated_at if updated_at else datetime.now()
         self.end_at = end_at if end_at else datetime.now()

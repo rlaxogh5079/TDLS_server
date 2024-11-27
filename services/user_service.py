@@ -1,7 +1,7 @@
-from models.response import ExistErrorCode, TokenModel, VerifyErrorCode
+from models.user import ExistErrorCode, VerifyErrorCode
 from email.mime.multipart import MIMEMultipart
 from sqlalchemy.orm.session import Session
-from models.response import TDLSException
+from models.response import TokenModel
 from email.mime.text import MIMEText
 from datetime import datetime
 from models.user import User

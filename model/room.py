@@ -2,7 +2,7 @@ from sqlalchemy import String, ForeignKeyConstraint, Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column
 from datetime import datetime
 from typing import Dict, Any
-from models.base import Base
+from model.base import Base
 from enum import Enum
 import uuid
 
@@ -14,7 +14,8 @@ class Room(Base):
         String(36), primary_key=True, default=lambda: str(uuid.uuid4())
     )
     room_name: Mapped[str] = mapped_column(String(30), nullable=False)
-    created_at: Mapped[datetime] = mapped_column(default=lambda: datetime.now())
+    created_at: Mapped[datetime] = mapped_column(
+        default=lambda: datetime.now())
 
     def __init__(self, room_name: str, created_at: datetime | None = None):
         self.room_name = room_name
@@ -44,7 +45,8 @@ class RoomEntry(Base):
     user_uuid: Mapped[str] = mapped_column(
         String(36), primary_key=True, default=lambda: str(uuid.uuid4())
     )
-    created_at: Mapped[datetime] = mapped_column(default=lambda: datetime.now())
+    created_at: Mapped[datetime] = mapped_column(
+        default=lambda: datetime.now())
     status: Mapped[RoomEntryStatus] = mapped_column(
         SQLEnum(RoomEntryStatus), default=RoomEntryStatus.pending
     )

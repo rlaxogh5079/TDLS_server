@@ -2,7 +2,7 @@ from sqlalchemy import String, ForeignKeyConstraint, Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column
 from datetime import datetime
 from typing import Dict, Any
-from models.base import Base
+from model.base import Base
 from enum import Enum
 import uuid
 
@@ -16,7 +16,7 @@ class FriendStatus(Enum):
 
 
 class Friend(Base):
-    __tablename__ = "Friend"
+    __tablename__ = "friend"
 
     transmit_user_uuid: Mapped[str] = mapped_column(
         String(36), primary_key=True, default=lambda: str(uuid.uuid4())
@@ -27,16 +27,17 @@ class Friend(Base):
     status: Mapped[FriendStatus] = mapped_column(
         SQLEnum(FriendStatus), default=FriendStatus.pending
     )
-    created_at: Mapped[datetime] = mapped_column(default=lambda: datetime.now())
+    created_at: Mapped[datetime] = mapped_column(
+        default=lambda: datetime.now())
 
     __table_args__ = (
         ForeignKeyConstraint(
             ["transmit_user_uuid"],
-            ["User.user_uuid"],
+            ["user.user_uuid"],
         ),
         ForeignKeyConstraint(
             ["receive_user_uuid"],
-            ["User.user_uuid"],
+            ["user.user_uuid"],
         ),
     )
 

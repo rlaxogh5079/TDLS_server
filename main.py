@@ -1,24 +1,26 @@
-from models.response import TDLSException, ResponseModel
+from model.response import ResponseModel, ResponseStatusCode
+from controller.user_controller import user_controller
+from fastapi.exceptions import RequestValidationError
 from starlette.middleware.cors import CORSMiddleware
-from routes.friend_router import friend_router
-from routes.user_router import user_router
 from fastapi import FastAPI, Request
+from dotenv import load_dotenv
 import uvicorn
 import os
 
+load_dotenv()
 app = FastAPI()
 
-app.include_router(user_router)
-app.include_router(friend_router)
+
+@app.exception_handler(Exception)
+async def exception_handler(request: Request, exc: Exception):
+    return ResponseModel.show_json(status_code=ResponseStatusCode.INTERNAL_SERVER_ERROR, message="서버 내부에서 오류가 발생하였습니다.", detail=str(exc))
+
+app.include_router(user_controller)
 
 
-@app.exception_handler(TDLSException)
-async def tdls_exception_handler(request: Request, exc: TDLSException):
-    return ResponseModel.show_json(
-        status_code=500,
-        message="서버 내부 오류가 발생하였습니다",
-        detail=exc.message,
-    )
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    return ResponseModel.show_json(status_code=ResponseStatusCode.ENTITY_ERROR, message="데이터를 전송하는데 오류가 발생하였습니다.", detail=exc.__dict__)
 
 
 app.add_middleware(

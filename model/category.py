@@ -2,7 +2,7 @@ from sqlalchemy import String, ForeignKeyConstraint, Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column
 from datetime import datetime
 from typing import Dict, Any
-from models.base import Base
+from model.base import Base
 from enum import Enum
 import uuid
 
@@ -15,7 +15,8 @@ class Category(Base):
     )
     category_name: Mapped[str] = mapped_column(String(30), nullable=False)
     owner_uuid: Mapped[str] = mapped_column(String(36), nullable=False)
-    created_at: Mapped[datetime] = mapped_column(default=lambda: datetime.now())
+    created_at: Mapped[datetime] = mapped_column(
+        default=lambda: datetime.now())
     room_uuid: Mapped[str] = mapped_column(String(36), nullable=False)
 
     __table_args__ = (
